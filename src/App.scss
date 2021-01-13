@@ -1,0 +1,75 @@
+@font-face {
+  font-family: 'Recoleta';
+  src: url('./assets/fonts/recoleta/Recoleta-RegularDEMO.otf');
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Recoleta';
+  //   color: #170d42;
+  color: #efe2e2;
+}
+
+.home-wrapper {
+  min-height: 100vh;
+  background-image: linear-gradient(
+      to bottom,
+      rgba(245, 246, 252, 0.52),
+      rgb(44 3 34 / 90%)
+    ),
+    url('./assets/img/pexels-suleyman-seykan-3694362.jpg');
+  background-size: cover;
+  padding-top: 10vh;
+  .title {
+    font-weight: bold;
+    font-size: 40px;
+  }
+  .search-container {
+    position: relative;
+    input {
+      padding: 0.5rem 2rem;
+      width: 80%;
+      border-radius: 5px;
+      border: none;
+      &:focus {
+        outline: none;
+      }
+    }
+    .input-icon {
+      position: absolute;
+      top: 6px;
+      left: 8px;
+    }
+  }
+  .card-shadow {
+    background: rgb(39 11 32 / 47%);
+    border-radius: 8px;
+    padding: 1.4rem;
+    color: #efe2e2;
+  }
+  .btn {
+    cursor: pointer;
+  }
+  .btn-nominate {
+    background: #7935ff;
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+  }
+  .btn-red {
+    background: #a91c1c;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+  .btn-search{
+      color: white;
+      height: 41px;
+      background: #7935ff;
+      margin-left: .5rem;
+      @media (max-width:770px) {
+          margin-left: 0;
+      }
+  }
+}
