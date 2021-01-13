@@ -4,7 +4,7 @@ import {
   GET_MOVIE_ERROR,
   NOMINATE_MOVIE,
 } from './types';
-const base_url = 'http://www.omdbapi.com/?i=tt3896198&apikey=e1329144'
+const base_url = 'http://www.omdbapi.com/?'
 
 // Get movies
 export const fetchMovie = (payload) => async (dispatch) => {
@@ -12,7 +12,7 @@ export const fetchMovie = (payload) => async (dispatch) => {
       headers: {},
     };
     try {
-      const res = await axios.post(`${base_url}`, payload, config);
+      const res = await axios.post(`${base_url}t=${payload}&apikey=e1329144`, payload, config);
       console.log(res.data);
       dispatch({
         type: GET_MOVIE,

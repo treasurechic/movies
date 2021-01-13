@@ -6,44 +6,58 @@ import {fetchMovie} from './redux/actions/movie';
 import {nominateMovie} from './redux/actions/movie';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import video from './assets/img/videobg.mp4';
+import bg from './assets/img/bg.PNG';
 
 const Homepage = ({fetchMovie, nominateMovie, movies, NominatedMovies}) => {
   const [SearchVal, setSearchVal] = useState('');
   const [Val, setVal] = useState('');
-  const Nominated = [];
+  const Nominated = JSON.parse(localStorage.getItem('nominatedMovies'));
   const SearchedMovies = [];
   const changeVal = (e) => {
     setSearchVal(e.target.value);
   };
   const searchMovie = () => {
-    setVal(SearchVal)
-    console.log(SearchVal);
-    async function awaitData() {
-      let data = await fetchMovie(SearchVal);
-      //   console.log(data);
-      SearchedMovies.push(data);
-      console.log(SearchedMovies);
+    if (SearchVal !== '') {
+      setVal(SearchVal);
+      console.log(SearchVal);
+      async function awaitData() {
+        let data = await fetchMovie(SearchVal);
+        //   console.log(data);
+        SearchedMovies.push(data);
+        console.log(SearchedMovies);
+      }
+      awaitData();
     }
-    awaitData();
   };
 
   const nominate = (val) => {
     console.log(val);
-    nominateMovie(val)
+    nominateMovie(val);
+    async function awaitData() {
+      let data = await Nominated.push(val);
+      console.log(Nominated);
+      localStorage.setItem('nominatedMovies', JSON.stringify([Nominated]));
+      console.log(Nominated);
+    }
+    awaitData();
     toast.success(`${val} nominated!`);
   };
 
   const removeNominated = (val) => {
     toast.dark(`${val} removed!`);
     console.log(val);
-    const RemainingMovies = NominatedMovies.filter(e => e !== val)
-    console.log(RemainingMovies)
-    nominateMovie(RemainingMovies)
+    const RemainingMovies = NominatedMovies.filter((e) => e !== val);
+    console.log(RemainingMovies);
+    nominateMovie(RemainingMovies);
   };
 
   return (
     <div className="home-wrapper">
       <ToastContainer />
+      <video id="videoBg" poster={bg} autoPlay muted loop>
+        <source src={video} type="video/mp4" />
+      </video>
       <div className="container">
         <h2 className="title">The Shoppies</h2>
         <div className="card-shadow">
@@ -86,17 +100,17 @@ const Homepage = ({fetchMovie, nominateMovie, movies, NominatedMovies}) => {
                 <h5 className="result-title">Result for "{Val}"</h5>
                 <ul>
                   {movies.map((each) => (
-                  <li key={each.Title}>
-                    {each.Title} ({each.Year})
-                    <button
-                      className="ml-3 btn btn-nominate"
-                      onClick={(e) => {
-                        nominate(`${each.Title} (${each.Year})`);
-                      }}
-                    >
-                      Nominate
-                    </button>
-                  </li>
+                    <li key={each.imdbID}>
+                      {each.Title} ({each.Year})
+                      <button
+                        className="ml-3 btn btn-nominate"
+                        onClick={(e) => {
+                          nominate(`${each.Title} (${each.Year})`);
+                        }}
+                      >
+                        Nominate
+                      </button>
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -108,7 +122,7 @@ const Homepage = ({fetchMovie, nominateMovie, movies, NominatedMovies}) => {
                 <h5 className="result-title">Nominations</h5>
                 <ul>
                   {NominatedMovies.map((each) => (
-                    <li key={each.Title}>
+                    <li key={each.imdbID}>
                       {each}
                       <button
                         className="ml-3 btn btn-red"

@@ -13,16 +13,30 @@ body {
 
 .home-wrapper {
   min-height: 100vh;
-  background-image: linear-gradient(
-      to bottom,
-      rgba(245, 246, 252, 0.52),
-      rgb(44 3 34 / 90%)
-    ),
-    url('./assets/img/pexels-suleyman-seykan-3694362.jpg');
-  background-size: cover;
-  padding-top: 10vh;
+  #videoBg {
+    position: fixed;
+    z-index: -1;
+    @media (min-aspect-ratio: 16/9) {
+      width: 100%;
+      height: auto;
+    }
+    @media (max-aspect-ratio: 16/9) {
+      width: auto;
+      height: 100%;
+    }
+    @media (max-width: 770px) {
+      display: none;
+    }
+  }
+  @media (max-width: 770px) {
+    background:linear-gradient(to bottom, rgb(149 94 150 / 52%), rgb(50 3 39 / 90%)), url('./assets/img/bg.PNG');
+    background-size: cover;
+    background-position: center;
+  }
+  background: linear-gradient(to bottom, rgb(149 94 150 / 52%), rgb(50 3 39 / 90%));
   .title {
     font-weight: bold;
+    padding-top: 10vh;
     font-size: 40px;
   }
   .search-container {
@@ -63,13 +77,13 @@ body {
     font-size: 10px;
     padding: 2px 6px;
   }
-  .btn-search{
-      color: white;
-      height: 41px;
-      background: #7935ff;
-      margin-left: .5rem;
-      @media (max-width:770px) {
-          margin-left: 0;
-      }
+  .btn-search {
+    color: white;
+    height: 41px;
+    background: #7935ff;
+    margin-left: 0.5rem;
+    @media (max-width: 770px) {
+      margin-left: 0;
+    }
   }
 }
