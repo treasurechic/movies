@@ -38,7 +38,8 @@ const Homepage = ({fetchMovie, movies, Loading}) => {
   const nominate = (val) => {
     console.log(val);
     const tempNominated = JSON.parse(localStorage.getItem('nominatedMovies'));
-    const finalNominated = [...tempNominated, val];
+    let finalNominated = []
+    tempNominated ? finalNominated = [...tempNominated, val] :  finalNominated = [val]
     if (finalNominated.length <= 5) {
       setoldNominated(finalNominated);
       console.log('object');
