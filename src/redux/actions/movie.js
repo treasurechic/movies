@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {GET_MOVIE, GET_MOVIE_ERROR} from './types';
+import {GET_MOVIE, GET_MOVIE_ERROR, ERROR} from './types';
 const base_url = 'https://www.omdbapi.com/?';
 
 // Get movies
@@ -13,7 +13,6 @@ export const fetchMovie = (payload) => async (dispatch) => {
       payload,
       config
     );
-    console.log(res.data);
     dispatch({
       type: GET_MOVIE,
       payload: res.data,
@@ -26,6 +25,8 @@ export const fetchMovie = (payload) => async (dispatch) => {
     }
     return res.data;
   } catch (error) {
-    console.log(error);
+    dispatch({
+      type: ERROR
+    });
   }
 };

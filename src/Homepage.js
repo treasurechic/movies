@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import {fetchMovie} from './redux/actions/movie';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
@@ -9,45 +9,43 @@ import video from './assets/img/videobg.mp4';
 import bg from './assets/img/bg.PNG';
 import NominatedList from './Nominated';
 
-const Homepage = ({fetchMovie, movies, Loading, Error}) => {
+const Homepage = ({fetchMovie, movies, Loading, Error, networkError}) => {
   const [SearchVal, setSearchVal] = useState('');
   const [Val, setVal] = useState('');
-  const [disableButton, setdisableButton] = useState(false)
+  const [disableButton, setdisableButton] = useState(false);
   const newNominated = '';
   const [oldNominated, setoldNominated] = useState(
     JSON.parse(localStorage.getItem('nominatedMovies'))
   );
-  console.log(oldNominated);
   const SearchedMovies = [];
   const changeVal = (e) => {
     setSearchVal(e.target.value);
   };
   const searchMovie = () => {
-    setdisableButton(false)
+    setdisableButton(false);
     if (SearchVal !== '') {
       setVal(SearchVal);
-      console.log(SearchVal);
       async function awaitData() {
         let data = await fetchMovie(SearchVal);
-        //   console.log(data);
         SearchedMovies.push(data);
-        console.log(SearchedMovies);
       }
       awaitData();
+    }
+    if(networkError){
+      toast.error('Sorry, could not connect you to the server')
     }
   };
 
   const nominate = (val) => {
-    console.log(val);
-    setdisableButton(true)
+    setdisableButton(true);
     const tempNominated = JSON.parse(localStorage.getItem('nominatedMovies'));
-    let finalNominated = []
-    tempNominated ? finalNominated = [...tempNominated, val] :  finalNominated = [val]
+    let finalNominated = [];
+    tempNominated
+      ? (finalNominated = [...tempNominated, val])
+      : (finalNominated = [val]);
     if (finalNominated.length <= 5) {
       setoldNominated(finalNominated);
-      console.log('object');
       localStorage.setItem('nominatedMovies', JSON.stringify(finalNominated));
-      console.log([...finalNominated]);
 
       if (finalNominated.length === 5) {
         toast.dark('You have filled up your nomination list!');
@@ -58,19 +56,15 @@ const Homepage = ({fetchMovie, movies, Loading, Error}) => {
   };
 
   const removeNominated = (val) => {
-    console.log(val);
-    const newVal = `${movies[0].Title} (${movies[0].Year})`
-    console.log(`${movies[0].Title} (${movies[0].Year})`)
-    if(val === newVal){
-      setdisableButton(false)
-    }
+      const newVal = `${movies[0]?.Title} (${movies[0]?.Year})`;
+      if (val === newVal) {
+        setdisableButton(false);
+      }
+    
     const RemainingMovies = oldNominated.filter((e) => e !== val);
-    console.log(RemainingMovies);
     setoldNominated(RemainingMovies);
-    console.log(oldNominated);
     localStorage.setItem('nominatedMovies', JSON.stringify(RemainingMovies));
   };
-  console.log(Loading);
 
   return (
     <div className="home-wrapper">
@@ -107,6 +101,7 @@ const Homepage = ({fetchMovie, movies, Loading, Error}) => {
             <div className="col-lg-6 col-md-6 col-sm-12 my-4">
               <div className="card-shadow">
                 <h5 className="result-title">Result for "{SearchVal}"</h5>
+                <SkeletonTheme color="#d0bfbf96" highlightColor="#444">
                 <ul>
                   <li>
                     <Skeleton />
@@ -118,6 +113,7 @@ const Homepage = ({fetchMovie, movies, Loading, Error}) => {
                     <Skeleton />
                   </li>
                 </ul>
+                </SkeletonTheme>
               </div>
             </div>
           )}
@@ -144,11 +140,11 @@ const Homepage = ({fetchMovie, movies, Loading, Error}) => {
               </div>
             </div>
           )}
-           {Error && (
+          {Error && (
             <div className="col-lg-6 col-md-6 col-sm-12 my-4">
               <div className="card-shadow">
                 <h5 className="result-title">Result for "{Val}"</h5>
-               {Error}
+                {Error}
               </div>
             </div>
           )}
@@ -173,5 +169,6 @@ const mapStateToProps = (state) => ({
   movies: state.movie.movies,
   Loading: state.movie.loading,
   Error: state.movie.error,
+  networkError: state.movie.networkError,
 });
 export default connect(mapStateToProps, {fetchMovie})(Homepage);
