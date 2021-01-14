@@ -9,7 +9,7 @@ import video from './assets/img/videobg.mp4';
 import bg from './assets/img/bg.PNG';
 import NominatedList from './Nominated';
 
-const Homepage = ({fetchMovie, movies, Loading}) => {
+const Homepage = ({fetchMovie, movies, Loading, Error}) => {
   const [SearchVal, setSearchVal] = useState('');
   const [Val, setVal] = useState('');
   const newNominated = '';
@@ -113,7 +113,7 @@ const Homepage = ({fetchMovie, movies, Loading}) => {
               </div>
             </div>
           )}
-          {movies && !Loading && (
+          {movies && !Loading && !Error && (
             <div className="col-lg-6 col-md-6 col-sm-12 my-4">
               <div className="card-shadow">
                 <h5 className="result-title">Result for "{Val}"</h5>
@@ -132,6 +132,14 @@ const Homepage = ({fetchMovie, movies, Loading}) => {
                     </li>
                   ))}
                 </ul>
+              </div>
+            </div>
+          )}
+           {Error && (
+            <div className="col-lg-6 col-md-6 col-sm-12 my-4">
+              <div className="card-shadow">
+                <h5 className="result-title">Result for "{Val}"</h5>
+               {Error}
               </div>
             </div>
           )}
@@ -155,5 +163,6 @@ Homepage.propTypes = {
 const mapStateToProps = (state) => ({
   movies: state.movie.movies,
   Loading: state.movie.loading,
+  Error: state.movie.error,
 });
 export default connect(mapStateToProps, {fetchMovie})(Homepage);
