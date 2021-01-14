@@ -10,7 +10,7 @@ const NominatedList = (props) => {
         <h5 className="result-title">Nominations</h5>
         <ul>
           <FlipMove duration={300} easing="ease-in-out">
-            {items.map((each) => (
+            {items?.map((each) => (
               <li key={each}>
                 {each}
                 <button

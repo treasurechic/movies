@@ -117,7 +117,7 @@ const Homepage = ({fetchMovie, movies, Loading}) => {
               <div className="card-shadow">
                 <h5 className="result-title">Result for "{Val}"</h5>
                 <ul>
-                  {movies.map((each) => (
+                  {movies?.map((each) => (
                     <li key={each.imdbID}>
                       {each.Title} ({each.Year})
                       <button
