@@ -134,7 +134,7 @@ const Homepage = ({fetchMovie, movies, Loading}) => {
               </div>
             </div>
           )}
-          {movies && (
+          {movies && oldNominated.length > 0 && (
             <div className="col-lg-6 col-md-6 col-sm-12 my-4">
               <NominatedList
                 items={oldNominated}
