@@ -5,7 +5,7 @@ import Skeleton from 'react-loading-skeleton';
 import {fetchMovie} from './redux/actions/movie';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import video from './assets/img/videobg.mp4';
+import video from './assets/img/videobg.mov';
 import bg from './assets/img/bg.PNG';
 import NominatedList from './Nominated';
 
@@ -76,7 +76,7 @@ const Homepage = ({fetchMovie, movies, Loading, Error}) => {
     <div className="home-wrapper">
       <ToastContainer />
       <video id="videoBg" poster={bg} autoPlay muted loop>
-        <source src={video} type="video/mp4" />
+        <source src={video} type="video/mov" />
       </video>
       <div className="container">
         <h2 className="title">The Shoppies</h2>
