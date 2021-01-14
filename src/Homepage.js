@@ -12,6 +12,7 @@ import NominatedList from './Nominated';
 const Homepage = ({fetchMovie, movies, Loading, Error}) => {
   const [SearchVal, setSearchVal] = useState('');
   const [Val, setVal] = useState('');
+  const [disableButton, setdisableButton] = useState(false)
   const newNominated = '';
   const [oldNominated, setoldNominated] = useState(
     JSON.parse(localStorage.getItem('nominatedMovies'))
@@ -22,6 +23,7 @@ const Homepage = ({fetchMovie, movies, Loading, Error}) => {
     setSearchVal(e.target.value);
   };
   const searchMovie = () => {
+    setdisableButton(false)
     if (SearchVal !== '') {
       setVal(SearchVal);
       console.log(SearchVal);
@@ -37,6 +39,7 @@ const Homepage = ({fetchMovie, movies, Loading, Error}) => {
 
   const nominate = (val) => {
     console.log(val);
+    setdisableButton(true)
     const tempNominated = JSON.parse(localStorage.getItem('nominatedMovies'));
     let finalNominated = []
     tempNominated ? finalNominated = [...tempNominated, val] :  finalNominated = [val]
@@ -56,6 +59,11 @@ const Homepage = ({fetchMovie, movies, Loading, Error}) => {
 
   const removeNominated = (val) => {
     console.log(val);
+    const newVal = `${movies[0].Title} (${movies[0].Year})`
+    console.log(`${movies[0].Title} (${movies[0].Year})`)
+    if(val === newVal){
+      setdisableButton(false)
+    }
     const RemainingMovies = oldNominated.filter((e) => e !== val);
     console.log(RemainingMovies);
     setoldNominated(RemainingMovies);
@@ -126,6 +134,7 @@ const Homepage = ({fetchMovie, movies, Loading, Error}) => {
                         onClick={(e) => {
                           nominate(`${each.Title} (${each.Year})`);
                         }}
+                        disabled={disableButton}
                       >
                         Nominate
                       </button>
