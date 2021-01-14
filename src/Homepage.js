@@ -3,16 +3,20 @@ import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Skeleton from 'react-loading-skeleton';
 import {fetchMovie} from './redux/actions/movie';
-import {nominateMovie} from './redux/actions/movie';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import video from './assets/img/videobg.mp4';
 import bg from './assets/img/bg.PNG';
+import NominatedList from './Nominated';
 
-const Homepage = ({fetchMovie, nominateMovie, movies, NominatedMovies}) => {
+const Homepage = ({fetchMovie, movies, Loading}) => {
   const [SearchVal, setSearchVal] = useState('');
   const [Val, setVal] = useState('');
-  const Nominated = JSON.parse(localStorage.getItem('nominatedMovies'));
+  const newNominated = '';
+  const [oldNominated, setoldNominated] = useState(
+    JSON.parse(localStorage.getItem('nominatedMovies'))
+  );
+  console.log(oldNominated);
   const SearchedMovies = [];
   const changeVal = (e) => {
     setSearchVal(e.target.value);
@@ -33,24 +37,31 @@ const Homepage = ({fetchMovie, nominateMovie, movies, NominatedMovies}) => {
 
   const nominate = (val) => {
     console.log(val);
-    nominateMovie(val);
-    async function awaitData() {
-      let data = await Nominated.push(val);
-      console.log(Nominated);
-      localStorage.setItem('nominatedMovies', JSON.stringify([Nominated]));
-      console.log(Nominated);
+    const tempNominated = JSON.parse(localStorage.getItem('nominatedMovies'));
+    const finalNominated = [...tempNominated, val];
+    if (finalNominated.length <= 5) {
+      setoldNominated(finalNominated);
+      console.log('object');
+      localStorage.setItem('nominatedMovies', JSON.stringify(finalNominated));
+      console.log([...finalNominated]);
+
+      if (finalNominated.length === 5) {
+        toast.dark('You have filled up your nomination list!');
+      }
+    } else {
+      toast.error('Sorry, you have exceeded the nomination list');
     }
-    awaitData();
-    toast.success(`${val} nominated!`);
   };
 
   const removeNominated = (val) => {
-    toast.dark(`${val} removed!`);
     console.log(val);
-    const RemainingMovies = NominatedMovies.filter((e) => e !== val);
+    const RemainingMovies = oldNominated.filter((e) => e !== val);
     console.log(RemainingMovies);
-    nominateMovie(RemainingMovies);
+    setoldNominated(RemainingMovies);
+    console.log(oldNominated);
+    localStorage.setItem('nominatedMovies', JSON.stringify(RemainingMovies));
   };
+  console.log(Loading);
 
   return (
     <div className="home-wrapper">
@@ -83,18 +94,25 @@ const Homepage = ({fetchMovie, nominateMovie, movies, NominatedMovies}) => {
           </div>
         </div>
         <div className="row">
-          {/* <div className="col-lg-6 col-md-6 col-sm-12 my-4">
-            <div className="card-shadow">
-              <h5 className="result-title">Result for "{SearchVal}"</h5>
-              <ul>
-                <li><Skeleton /></li>
-                <li><Skeleton /></li>
-                <li><Skeleton /></li>
-                <li><Skeleton /></li>
-              </ul>
+          {Loading && Val !== '' && (
+            <div className="col-lg-6 col-md-6 col-sm-12 my-4">
+              <div className="card-shadow">
+                <h5 className="result-title">Result for "{SearchVal}"</h5>
+                <ul>
+                  <li>
+                    <Skeleton />
+                  </li>
+                  <li>
+                    <Skeleton />
+                  </li>
+                  <li>
+                    <Skeleton />
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div> */}
-          {movies && (
+          )}
+          {movies && !Loading && (
             <div className="col-lg-6 col-md-6 col-sm-12 my-4">
               <div className="card-shadow">
                 <h5 className="result-title">Result for "{Val}"</h5>
@@ -118,24 +136,10 @@ const Homepage = ({fetchMovie, nominateMovie, movies, NominatedMovies}) => {
           )}
           {movies && (
             <div className="col-lg-6 col-md-6 col-sm-12 my-4">
-              <div className="card-shadow">
-                <h5 className="result-title">Nominations</h5>
-                <ul>
-                  {NominatedMovies.map((each) => (
-                    <li key={each.imdbID}>
-                      {each}
-                      <button
-                        className="ml-3 btn btn-red"
-                        onClick={(each) => {
-                          removeNominated(each);
-                        }}
-                      >
-                        Remove
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <NominatedList
+                items={oldNominated}
+                removeNominated={removeNominated}
+              ></NominatedList>
             </div>
           )}
         </div>
@@ -145,11 +149,10 @@ const Homepage = ({fetchMovie, nominateMovie, movies, NominatedMovies}) => {
 };
 Homepage.propTypes = {
   fetchMovie: PropTypes.func.isRequired,
-  nominateMovie: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   movies: state.movie.movies,
-  NominatedMovies: state.movie.nominated,
+  Loading: state.movie.loading,
 });
-export default connect(mapStateToProps, {fetchMovie, nominateMovie})(Homepage);
+export default connect(mapStateToProps, {fetchMovie})(Homepage);
